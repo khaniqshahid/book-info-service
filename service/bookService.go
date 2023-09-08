@@ -24,7 +24,7 @@ func (s DefaultBookService) GetBookById(id int) (*domain.Book, error) {
 	return s.repo.ById(id)
 }
 
-// Helper function to instantiate DefaultBookService create a new book service instance
+// Helper function to instantiate DefaultBookService create a new book service instances
 func NewCustomBookService(repository domain.BookRepository) DefaultBookService {
 	return DefaultBookService{repo: repository}
 }
