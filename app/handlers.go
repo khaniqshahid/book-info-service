@@ -8,20 +8,20 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/khaniqshahid/book-details-service/service"
-	"github.com/shopspring/decimal"
 )
 
-type BookDetails struct {
-	Id        uint            `json:"book_id" gorm:"primarykey"`
-	Title     string          `json:"title" gorm:"title;type:varchar(100);not null"`
-	Author    string          `json:"author" gorm:"author;type:varchar(100);not null"`
-	Publisher string          `json:"publisher" gorm:"publisher;type:varchar(100);not null"`
-	Price     decimal.Decimal `json:"price" gorm:"price;type:decimal(5,2);not null"`
-	// Price       float64   `json:"price" gorm:"price;type:decimal(5,2);not null"`
-	// IssuedAt    time.Time `json:"issuedAt" gorm:"issuedAt;type:date;not null"`
-	IssuedAt    string `json:"issuedAt" gorm:"issuedAt;type:date;not null"`
-	Description string `json:"description" gorm:"description;type:varchar(300)"`
-}
+// we are not using the following code in this codebase.
+// type BookDetails struct {
+// 	Id        uint            `json:"book_id" gorm:"primarykey"`
+// 	Title     string          `json:"title" gorm:"title;type:varchar(100);not null"`
+// 	Author    string          `json:"author" gorm:"author;type:varchar(100);not null"`
+// 	Publisher string          `json:"publisher" gorm:"publisher;type:varchar(100);not null"`
+// 	Price     decimal.Decimal `json:"price" gorm:"price;type:decimal(5,2);not null"`
+// 	// Price       float64   `json:"price" gorm:"price;type:decimal(5,2);not null"`
+// 	// IssuedAt    time.Time `json:"issuedAt" gorm:"issuedAt;type:date;not null"`
+// 	IssuedAt    string `json:"issuedAt" gorm:"issuedAt;type:date;not null"`
+// 	Description string `json:"description" gorm:"description;type:varchar(300)"`
+// }
 
 // Created a struct which has dependency on Book service to help passing it to Book handler to connect with Domain layer
 type BookInfoHandler struct {
@@ -71,13 +71,14 @@ func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
 	book, err1 := bh.service.GetBookById(id)
 	if err1 != nil {
 		// fmt.Println(w, err1.Code, err1.Message)
-		// Need to check why following is not working=======
-		// writeResponse(w, err1.Code, err1.Message)
-		// =================================================
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(err1.Code)
-		json.NewEncoder(w).Encode(err1.AsMessage())
-		return
+		// Need to check why following is not working in Json format in response=======
+		writeResponse(w, err1.Code, err1.AsMessage())
+		// ===========================================================================
+
+		// w.Header().Add("Content-Type", "application/json")
+		// w.WriteHeader(err1.Code)
+		// json.NewEncoder(w).Encode(err1.AsMessage())
+
 	} else {
 		writeResponse(w, http.StatusOK, book)
 		// w.Header().Add("Content-Type", "application/json")
@@ -92,5 +93,7 @@ func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		panic(err)
+	}
 }
