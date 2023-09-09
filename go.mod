@@ -7,3 +7,8 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/shopspring/decimal v1.3.1
 )
+
+require (
+	go.uber.org/multierr v1.11.0 // indirect
+	go.uber.org/zap v1.25.0 // indirect
+)
