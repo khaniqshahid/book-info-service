@@ -2,11 +2,11 @@ package domain
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/khaniqshahid/book-details-service/errs"
+	"github.com/khaniqshahid/book-details-service/logger"
 )
 
 type BookRepositoryDb struct {
@@ -19,7 +19,7 @@ func (d BookRepositoryDb) FindAll() ([]Book, *errs.AppError) {
 
 	rows, err := d.client.Query(findAllSql)
 	if err != nil {
-		log.Println("Error while quering books table " + err.Error())
+		logger.Error("Error while quering books table " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error ")
 	}
 	books := make([]Book, 0)
@@ -27,7 +27,7 @@ func (d BookRepositoryDb) FindAll() ([]Book, *errs.AppError) {
 		var b Book
 		err := rows.Scan(&b.Id, &b.Title, &b.Author, &b.Publisher, &b.Price, &b.IssuedAt, &b.Description)
 		if err != nil {
-			log.Println("Error while scanning books table " + err.Error())
+			logger.Error("Error while scanning books table " + err.Error())
 			return nil, errs.NewUnexpectedError("Unexpected database error")
 		}
 		books = append(books, b)
@@ -46,7 +46,7 @@ func (d BookRepositoryDb) ById(id int) (*Book, *errs.AppError) {
 			// In case the book id does not exist in the database
 			return nil, errs.NewNotFoundError("Book not found")
 		} else {
-			log.Println("Error while scanning book " + err.Error())
+			logger.Error("Error while scanning book " + err.Error())
 			// In case of an unexpected error e.g status 500 Internal server error) aong with the error message
 			return nil, errs.NewUnexpectedError("Unexpected database error")
 		}
