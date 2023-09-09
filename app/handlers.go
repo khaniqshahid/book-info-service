@@ -70,12 +70,27 @@ func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
 	}
 	book, err1 := bh.service.GetBookById(id)
 	if err1 != nil {
+		// fmt.Println(w, err1.Code, err1.Message)
+		// Need to check why following is not working=======
+		// writeResponse(w, err1.Code, err1.Message)
+		// =================================================
+		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(err1.Code)
-		fmt.Fprintf(w, err1.Message)
+		json.NewEncoder(w).Encode(err1.AsMessage())
 		return
 	} else {
-		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(book)
+		writeResponse(w, http.StatusOK, book)
+		// w.Header().Add("Content-Type", "application/json")
+		// w.WriteHeader(http.StatusOK)
+		// json.NewEncoder(w).Encode(book)
 	}
 
+}
+
+// Helper function to write response so that we can reuse it in different handler.
+
+func writeResponse(w http.ResponseWriter, code int, data interface{}) {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(data)
 }

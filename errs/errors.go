@@ -3,8 +3,8 @@ package errs
 import "net/http"
 
 type AppError struct {
-	Code    int
-	Message string
+	Code    int    `json:",omitempty"`
+	Message string `json:"message"`
 }
 
 // // Error implements error.
@@ -12,6 +12,12 @@ type AppError struct {
 // 	panic("unimplemented")
 // }
 
+// Reciever Function to return only the error message and not the code by omitempty "Code" in json
+func (e AppError) AsMessage() *AppError {
+	return &AppError{
+		Message: e.Message,
+	}
+}
 func NewNotFoundError(message string) *AppError {
 	return &AppError{Code: http.StatusNotFound, Message: message}
 
