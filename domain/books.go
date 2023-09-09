@@ -3,6 +3,7 @@ package domain
 import (
 	"time"
 
+	"github.com/khaniqshahid/book-details-service/errs"
 	"github.com/shopspring/decimal"
 )
 
@@ -21,5 +22,5 @@ type Book struct {
 // Introduced a SECONDARY-PORT Interface here.
 type BookRepository interface {
 	FindAll() ([]Book, error)
-	ById(int) (*Book, error)
+	ById(int) (*Book, *errs.AppError)
 }

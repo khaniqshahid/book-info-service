@@ -2,11 +2,11 @@ package domain
 
 import (
 	"database/sql"
-	"errors"
 	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/khaniqshahid/book-details-service/errs"
 )
 
 type BookRepositoryDb struct {
@@ -35,7 +35,7 @@ func (d BookRepositoryDb) FindAll() ([]Book, error) {
 	return books, nil
 }
 
-func (d BookRepositoryDb) ById(id int) (*Book, error) {
+func (d BookRepositoryDb) ById(id int) (*Book, *errs.AppError) {
 
 	findBookSql := "select book_id, title, author, publisher, price, issued_at, description from books where book_id = ?"
 	row := d.client.QueryRow(findBookSql, id)
@@ -44,11 +44,11 @@ func (d BookRepositoryDb) ById(id int) (*Book, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// In case the book id does not exist in the database
-			return nil, errors.New("Book not found")
+			return nil, errs.NewNotFoundError("Book not found")
 		} else {
 			log.Println("Error while scanning book " + err.Error())
 			// In case of an unexpected error e.g status 500 Internal server error) aong with the error message
-			return nil, errors.New("Unexpected database error")
+			return nil, errs.NewUnexpectedError("Unexpected database error")
 		}
 	}
 	return &b, nil

@@ -65,13 +65,13 @@ func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params["book_id"])
 	if err != nil {
 		fmt.Println(err)
-		http.Error(w, "Invalid customer ID", http.StatusBadRequest)
+		http.Error(w, "Invalid Book ID", http.StatusBadRequest)
 		return
 	}
-	book, err := bh.service.GetBookById(id)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, err.Error())
+	book, err1 := bh.service.GetBookById(id)
+	if err1 != nil {
+		w.WriteHeader(err1.Code)
+		fmt.Fprintf(w, err1.Message)
 		return
 	} else {
 		w.Header().Add("Content-Type", "application/json")
