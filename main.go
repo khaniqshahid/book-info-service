@@ -10,6 +10,6 @@ import (
 func main() {
 
 	// Start Routes
-	logger.Logger.Info("Starting the Application")
+	logger.Debug("Starting the Application")
 	app.Start()
 }
