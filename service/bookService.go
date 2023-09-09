@@ -7,7 +7,7 @@ import (
 
 // Introduced PRIMARY-PORT  Interface for book service
 type BookService interface {
-	GetAllBook() ([]domain.Book, error)
+	GetAllBook() ([]domain.Book, *errs.AppError)
 	GetBookById(int) (*domain.Book, *errs.AppError)
 }
 
@@ -18,7 +18,7 @@ type DefaultBookService struct {
 }
 
 // Reciever Function takes struct as input and returns from interface instance
-func (s DefaultBookService) GetAllBook() ([]domain.Book, error) {
+func (s DefaultBookService) GetAllBook() ([]domain.Book, *errs.AppError) {
 	return s.repo.FindAll()
 }
 

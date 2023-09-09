@@ -54,10 +54,16 @@ func (bh *BookInfoHandler) getAllBooks(w http.ResponseWriter, r *http.Request) {
 	// 	},
 	// }
 
-	books, _ := bh.service.GetAllBook()
-	w.Header().Add("Content-Type", "application/json")
-	// db.Find(&books)
-	json.NewEncoder(w).Encode(books)
+	books, err1 := bh.service.GetAllBook()
+	if err1 != nil {
+		writeResponse(w, err1.Code, err1.AsMessage())
+	} else {
+		writeResponse(w, http.StatusOK, books)
+	}
+
+	// w.Header().Add("Content-Type", "application/json")
+	// // db.Find(&books)
+	// json.NewEncoder(w).Encode(books)
 }
 
 func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
@@ -71,10 +77,8 @@ func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
 	book, err1 := bh.service.GetBookById(id)
 	if err1 != nil {
 		// fmt.Println(w, err1.Code, err1.Message)
-		// Need to check why following is not working in Json format in response=======
-		writeResponse(w, err1.Code, err1.AsMessage())
-		// ===========================================================================
 
+		writeResponse(w, err1.Code, err1.AsMessage())
 		// w.Header().Add("Content-Type", "application/json")
 		// w.WriteHeader(err1.Code)
 		// json.NewEncoder(w).Encode(err1.AsMessage())

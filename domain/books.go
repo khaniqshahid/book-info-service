@@ -21,6 +21,6 @@ type Book struct {
 
 // Introduced a SECONDARY-PORT Interface here.
 type BookRepository interface {
-	FindAll() ([]Book, error)
+	FindAll() ([]Book, *errs.AppError)
 	ById(int) (*Book, *errs.AppError)
 }

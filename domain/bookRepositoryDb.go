@@ -13,14 +13,14 @@ type BookRepositoryDb struct {
 	client *sql.DB
 }
 
-func (d BookRepositoryDb) FindAll() ([]Book, error) {
+func (d BookRepositoryDb) FindAll() ([]Book, *errs.AppError) {
 	// findAllSql := "select book_id, title, author, publisher, price, issued_at, description from books"
 	findAllSql := "select book_id, title, author, publisher, price, issued_at, description from books"
 
 	rows, err := d.client.Query(findAllSql)
 	if err != nil {
 		log.Println("Error while quering books table " + err.Error())
-		return nil, err
+		return nil, errs.NewUnexpectedError("Unexpected database error ")
 	}
 	books := make([]Book, 0)
 	for rows.Next() {
@@ -28,7 +28,7 @@ func (d BookRepositoryDb) FindAll() ([]Book, error) {
 		err := rows.Scan(&b.Id, &b.Title, &b.Author, &b.Publisher, &b.Price, &b.IssuedAt, &b.Description)
 		if err != nil {
 			log.Println("Error while scanning books table " + err.Error())
-			return nil, err
+			return nil, errs.NewUnexpectedError("Unexpected database error")
 		}
 		books = append(books, b)
 	}
