@@ -50,7 +50,8 @@ func (d BookRepositoryDb) ById(id int) (*Book, error) {
 // Helper Function
 func NewBookRepositoryDb() BookRepositoryDb {
 
-	client, err := sql.Open("mysql", "admin:P@ssword1@tcp(localhost:3306)/bookdetails?parseTime=true")
+	// client, err := sql.Open("mysql", "admin:P@ssword1@tcp(localhost:3306)/bookdetails?parseTime=true")
+	client, err := sql.Open("mysql", "root:admin@tcp(localhost:3306)/bookdetails?parseTime=true")
 	if err != nil {
 		panic(err)
 	}
