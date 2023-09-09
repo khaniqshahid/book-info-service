@@ -2,6 +2,7 @@ package domain
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"time"
 
@@ -41,8 +42,14 @@ func (d BookRepositoryDb) ById(id int) (*Book, error) {
 	var b Book
 	err := row.Scan(&b.Id, &b.Title, &b.Author, &b.Publisher, &b.Price, &b.IssuedAt, &b.Description)
 	if err != nil {
-		log.Println("Error while scanning book " + err.Error())
-		return nil, err
+		if err == sql.ErrNoRows {
+			// In case the book id does not exist in the database
+			return nil, errors.New("Book not found")
+		} else {
+			log.Println("Error while scanning book " + err.Error())
+			// In case of an unexpected error e.g status 500 Internal server error) aong with the error message
+			return nil, errors.New("Unexpected database error")
+		}
 	}
 	return &b, nil
 }

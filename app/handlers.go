@@ -69,7 +69,6 @@ func (bh *BookInfoHandler) GetBookById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	book, err := bh.service.GetBookById(id)
-	// book, err := bh.service.GetBookById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, err.Error())
