@@ -8,7 +8,7 @@ import (
 
 // Introduced PRIMARY-PORT  Interface for book service
 type BookService interface {
-	GetAllBook() ([]domain.Book, *errs.AppError)
+	GetAllBook() ([]dto.BookResponse, *errs.AppError)
 	GetBookById(int) (*dto.BookResponse, *errs.AppError)
 }
 
@@ -20,8 +20,16 @@ type DefaultBookService struct {
 
 // Reciever Function takes struct as input and returns from interface instance
 // func
-func (s DefaultBookService) GetAllBook() ([]domain.Book, *errs.AppError) {
-	return s.repo.FindAll()
+func (s DefaultBookService) GetAllBook() ([]dto.BookResponse, *errs.AppError) {
+	books, err := s.repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	bookResponse := make([]dto.BookResponse, 0)
+	for _, b := range books {
+		bookResponse = append(bookResponse, b.ToDto())
+	}
+	return bookResponse, nil
 }
 
 /*
