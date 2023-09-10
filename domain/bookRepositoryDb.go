@@ -2,6 +2,7 @@ package domain
 
 import (
 	"database/sql"
+	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -67,8 +68,17 @@ func (d BookRepositoryDb) ById(id int) (*Book, *errs.AppError) {
 // Helper Function
 func NewBookRepositoryDb() BookRepositoryDb {
 
+	//OS ENVnvironment variable
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	dataSource := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?parseTime=true"
 	// client, err := sql.Open("mysql", "admin:P@ssword1@tcp(localhost:3306)/bookdetails?parseTime=true")
-	client, err := sqlx.Open("mysql", "root:admin@tcp(localhost:3306)/bookdetails?parseTime=true")
+	// client, err := sqlx.Open("mysql", "root:admin@tcp(localhost:3306)/bookdetails?parseTime=true")
+	client, err := sqlx.Open("mysql", dataSource)
 	if err != nil {
 		panic(err)
 	}
